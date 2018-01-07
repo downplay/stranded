@@ -81,6 +81,115 @@ This is a trivial example, and looking at this you might well wonder what advant
 
 * Debugging. The discreet steps allows us to generate useful debug data as the `strand` is executed, and handle errors in a more structured fashion vs the complexity of having try/catch around different steps in a thunk. More on this to come...
 
+## Atom types
+
+### strand
+
+A strand is itself an atom, it executes atoms in series:
+
+```js
+strand(firstAtom, secondAtom);
+```
+
+### action
+
+Dispatches an action to the Redux store:
+
+```js
+action(({ value }) => actionCreator(value));
+```
+
+### parallel
+
+Executes atoms in parallel. Execution continues once all atoms are resolved. Context will still be merged in a predictable order, and only available to atoms after `parallel`.
+
+```js
+strand(
+    parallel(atomA, atomB),
+    action(({ resultA, resultB }) => atomsFinished(resultA, resultB))
+);
+```
+
+### retry
+
+Retry an atom a number of times, 0 to retry forever. A bail condition can also end the loop.
+
+```js
+retry(flakyApiCall, {
+    times: 0,
+    // Bails in the year 3000
+    bail: () => new Date().getYear() > 3000
+});
+```
+
+### abort (/bail?)
+
+Ends execution of a strand.
+
+```js
+strand(
+    callAnApi,
+    abort(),
+    // This will never be reached
+    action(({ data }) => updateStore(data))
+);
+```
+
+### attempt
+
+Basically a try / catch, allowing you to map failure conditions to more useful data.
+
+```js
+strand(
+    attempt(
+        maybeThrow,
+        // Add a property to contex to handle the failure in subsequent atoms
+        { fail: true }
+    ),
+    // Dispatch action based on what happened
+    action(({ result, fail }) => (fail ? badResult() : goodResult(result)))
+);
+```
+
+A more interesting example:
+
+```js
+strand(
+    attempt(
+        retry(flakyApiCall, { times: 3 }),
+        // This strand executed after API fails 3 times
+        strand(
+            // Dispatch error state to store
+            action(({ error }) => badResult()),
+            // Bails the rest of the parent strand
+            abort()
+        )
+    ),
+    action(({ result }) => goodResult(result))
+);
+```
+
+### split/switch ?
+
+## Recipes
+
+### General async data loading
+
+```js
+const asyncStrand = (entityName, load) => () =>
+    strand(
+        action(loadingStarted),
+        attempt(
+            retry(load, { times: 3 }),
+            strand(action(loadingFailed), abort())
+        ),
+        action(({ data }) => entitiesFetched(entityName, data)),
+        action(loadingComplete)
+    );
+
+export const loadBlogPosts = asyncStrand("BlogPost", () => api.fetchBlogPost());
+```
+
 ## Credits
 
 Built using the Lerna React Library Template:
@@ -100,3 +209,7 @@ https://github.com/ReactTraining/react-router
 &copy;2018 Downplay Ltd
 
 Distributed under MIT license. See LICENSE for full details.
+
+```
+
+```
