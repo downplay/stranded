@@ -1,9 +1,11 @@
-/* global describe test expect */
+/* global describe test expect jest */
 
-import { execute, strand } from "../index";
+import { execute, strand, action } from "../index";
 
 const fooBar = () => Promise.resolve({ foo: "bar" });
 const barFoo = () => Promise.resolve({ bar: "foo" });
+
+const createAnAction = foo => ({ type: "AN_ACTION", payload: foo });
 
 describe("execute", () => {
     test("resolves Promise", async () => {
@@ -28,5 +30,34 @@ describe("execute", () => {
         const fixture = strand(fooBar, () => strand(barFoo));
         const result = await execute()(fixture);
         expect(result).toEqual({ foo: "bar", bar: "foo" });
+    });
+
+    test("passes on context", async () => {
+        const fixture = strand(fooBar, ({ foo }) =>
+            Promise.resolve({ bar: foo })
+        );
+        const result = await execute()(fixture);
+        expect(result).toEqual({ foo: "bar", bar: "bar" });
+    });
+
+    test("passes context to chained strand", async () => {
+        const fixture = strand(fooBar, () =>
+            strand(({ foo }) => Promise.resolve({ bar: foo }))
+        );
+        const result = await execute()(fixture);
+        expect(result).toEqual({ foo: "bar", bar: "bar" });
+    });
+
+    test("dispatches an action", async () => {
+        const fixture = strand(fooBar, ({ foo }) =>
+            action(createAnAction(foo))
+        );
+        const dispatch = jest.fn();
+        const result = await execute(dispatch)(fixture);
+        expect(result).toEqual({ foo: "bar" });
+        expect(dispatch).toHaveBeenCalledWith({
+            type: "AN_ACTION",
+            payload: "bar"
+        });
     });
 });

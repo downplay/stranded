@@ -1,4 +1,5 @@
 import { Strand } from "./strand";
+import { Action } from "./action";
 
 function* atomsGenerator(atoms) {
     let index = 0;
@@ -8,8 +9,8 @@ function* atomsGenerator(atoms) {
     }
 }
 
-const execute = (dispatch, getState) => async strand => {
-    let context = {};
+const execute = (dispatch, getState, chainedContext) => async strand => {
+    let context = { ...chainedContext };
     const atoms = atomsGenerator(strand.atoms);
     while (true) {
         const atom = atoms.next().value;
@@ -17,12 +18,18 @@ const execute = (dispatch, getState) => async strand => {
             break;
         }
         // Execute atom
-        let result = await atom();
-        // Chain to child strand
-        if (result instanceof Strand) {
-            result = await execute(dispatch, getState)(result);
+        let result = await atom(context);
+        // Dispatch action
+        if (result instanceof Action) {
+            dispatch(await result.atom());
+        } else {
+            // Chain to child strand
+            if (result instanceof Strand) {
+                result = await execute(dispatch, getState, context)(result);
+            }
+            // Merge results
+            context = { ...context, ...result };
         }
-        context = { ...context, ...result };
     }
     return context;
 };
