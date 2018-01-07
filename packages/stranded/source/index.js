@@ -1,3 +1,5 @@
-import MyDemoComponent from "./MyDemoComponent";
+import stranded from "./stranded";
 
-export default MyDemoComponent;
+export { default as strand } from "./strand";
+
+export default stranded;

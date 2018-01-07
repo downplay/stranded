@@ -1,0 +1,1 @@
+export const LOGIN_NOT_VALID = "LOGIN_NOT_VALID";

@@ -1,16 +1,24 @@
 import React from "react";
 
 import createHistory from "history/createBrowserHistory";
-import { SimpleProvider } from "jarl-react";
+
+import { Provider as RoutingProvider } from "jarl-react-redux";
+import { Provider as ReduxProvider } from "react-redux";
+import { Provider as StrandProvider } from "stranded";
+
 import routes from "./routes";
 import Pages from "./Pages";
 
 const history = createHistory();
 
 const Root = () => (
-    <SimpleProvider history={history} routes={routes}>
-        <Pages />
-    </SimpleProvider>
+    <ReduxProvider store={store}>
+        <RoutingProvider history={history} routes={routes}>
+            <StrandProvider>
+                <Pages />
+            </StrandProvider>
+        </RoutingProvider>
+    </ReduxProvider>
 );
 
 export default Root;

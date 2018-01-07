@@ -1,15 +1,26 @@
 import React, { Fragment } from "react";
-import MyDemoComponent from "my-demo-component";
+import { compose } from "recompact";
+import { connect } from "react-redux";
+import stranded from "stranded";
 
-const Home = () => (
+import { login } from "../login/strands";
+
+const LoginForm = ({ username, password, onSubmit, errors }) => (
     <Fragment>
         <header>
-            <h1 data-test="header">Home</h1>
+            <h1 data-test="header">Login</h1>
         </header>
-        <p>
-            <MyDemoComponent message="This is My Demo Component" />
-        </p>
+        <div>
+            <input type="text" placeholder="Username" value={username} />
+            <input type="text" placeholder="Password" value={password} />
+            <button type="button" onClick={handleClick}>
+                Login
+            </button>
+        </div>
     </Fragment>
 );
 
-export default Home;
+export default compose(
+    connect(({ login }) => ({ login })),
+    stranded({ login })
+)(Home);
