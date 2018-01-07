@@ -1,11 +1,13 @@
 {
     "name": "stranded",
-    "version": "0.0.1",
+    "version": "0.1.0",
     "description": "",
     "main": "index.js",
     "module": "es/index.js",
     "browserify": {
-        "transform": ["loose-envify"]
+        "transform": [
+            "loose-envify"
+        ]
     },
     "scripts": {
         "test": "jest",
@@ -27,7 +29,9 @@
         "stranded.js"
     ],
     "jest": {
-        "setupFiles": ["raf/polyfill"],
+        "setupFiles": [
+            "raf/polyfill"
+        ],
         "testRegex": "__tests__/.+\\.test\\.js$"
     },
     "keywords": [
