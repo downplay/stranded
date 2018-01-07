@@ -19,6 +19,7 @@
         "react-redux": "^5.0.6",
         "recompact": "^3.2.1",
         "redux": "^3.7.2",
+        "stranded": "^0.1.0",
         "yup": "^0.23.0"
     }
 }

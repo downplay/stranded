@@ -2,15 +2,12 @@ import React, { Component } from "react";
 import { withState, Link } from "jarl-react";
 
 import Home from "./pages/Home";
-import Page2 from "./pages/Page2";
 import NotFound from "./pages/NotFound";
 
 const renderPage = (page, missingPath) => {
     switch (page) {
         case "home":
             return <Home />;
-        case "page2":
-            return <Page2 />;
         default:
             // Handle missing pages
             return <NotFound missingPath={missingPath} />;
