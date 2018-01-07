@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { strandedContextShape } from "./Provider";
+import { strandsContextShape } from "./Provider";
 
 /**
  * Main HOC for connecting strands to components
@@ -7,7 +7,7 @@ import { strandedContextShape } from "./Provider";
 const stranded = mapStrandsToProps => WrappedComponent => {
     class Stranded extends Component {
         static contextTypes = {
-            strandedContext: strandedContextShape
+            strandedContext: strandsContextShape
         };
         render() {
             // For now, only supporting shorthand
