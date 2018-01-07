@@ -5,7 +5,7 @@ import invariant from "invariant";
 import { Strand } from "./strand";
 import execute from "./execute";
 
-const strandsContextShape = PropTypes.shape({
+export const strandsContextShape = PropTypes.shape({
     execute: PropTypes.func.isRequired
 }).isRequired;
 
