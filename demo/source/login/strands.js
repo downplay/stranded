@@ -2,6 +2,7 @@ import yup from "yup";
 
 import { strand, split, dispatch } from "stranded";
 import { loginWasInvalid, loginFailed, userLoggedIn } from "./actions";
+import * as api from "./api";
 
 // Define a yup schema to validate the login
 const loginSchema = yup.object().shape({
@@ -29,7 +30,7 @@ const callLoginService = async (username, password) => {
         // Call the fake API
         const result = await api.login();
         return { authorized: true, profile: result };
-    } catch {
+    } catch (e) {
         // Wrong user
         return { authorized: false };
     }
