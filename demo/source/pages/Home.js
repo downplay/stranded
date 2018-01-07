@@ -23,4 +23,4 @@ const LoginForm = ({ username, password, onSubmit, errors }) => (
 export default compose(
     connect(({ login }) => ({ login })),
     stranded({ login })
-)(Home);
+)(LoginForm);

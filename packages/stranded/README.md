@@ -1,8 +1,7 @@
-# my-demo-component
+# stranded
 
-This is a demo component built by the Lerna React Library Template. See:
-
-https://github.com/downplay/lerna-react-library-template
+This is the main package for `stranded` Redux side-effect library. For full README see the GitHub repository:
+https://github.com/downplay/stranded
 
 ## Copyright
 

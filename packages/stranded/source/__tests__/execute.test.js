@@ -1,17 +1,32 @@
 /* global describe test expect */
 
-import React from "react";
-import { configure, shallow } from "enzyme";
-import Adapter from "enzyme-adapter-react-16";
+import { execute, strand } from "../index";
 
-import MyDemoComponent from "../MyDemoComponent";
+const fooBar = () => Promise.resolve({ foo: "bar" });
+const barFoo = () => Promise.resolve({ bar: "foo" });
 
-configure({ adapter: new Adapter() });
+describe("execute", () => {
+    test("resolves Promise", async () => {
+        const fixture = strand(fooBar);
+        const result = await execute()(fixture);
+        expect(result).toEqual({ foo: "bar" });
+    });
 
-describe("<MyDemoComponent/>", () => {
-    test("renders", () => {
-        const component = shallow(<MyDemoComponent />);
-        const childComponent = component.find("b");
-        expect(childComponent.length).toEqual(1);
+    test("resolves two Promises", async () => {
+        const fixture = strand(fooBar, barFoo);
+        const result = await execute()(fixture);
+        expect(result).toEqual({ foo: "bar", bar: "foo" });
+    });
+
+    test("resolves object shorthand", async () => {
+        const fixture = strand({ foo: "bar" });
+        const result = await execute()(fixture);
+        expect(result).toEqual({ foo: "bar" });
+    });
+
+    test("chains to another strand", async () => {
+        const fixture = strand(fooBar, () => strand(barFoo));
+        const result = await execute()(fixture);
+        expect(result).toEqual({ foo: "bar", bar: "foo" });
     });
 });

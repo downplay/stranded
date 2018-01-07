@@ -16,6 +16,8 @@ This alternative side effects model adds a new layer to the architecture, rather
 
 ## An Example
 
+Let's take an extremely common
+
 ## Credits
 
 Built on the Lerna React Library Template:

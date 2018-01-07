@@ -7,7 +7,7 @@ const exec = (cmd, env) =>
     });
 
 if (process.env.CI) {
-    exec("lerna run build --stream --ignore my-demo-component-demo");
+    exec("lerna run build --stream --ignore stranded-demo");
 } else {
     exec("lerna run build --stream");
 }
