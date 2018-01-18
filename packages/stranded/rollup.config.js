@@ -19,7 +19,8 @@ const config = {
     external: ["react", "prop-types"],
     plugins: [
         babel({
-            exclude: "node_modules/**"
+            exclude: "node_modules/**",
+            runtimeHelpers: true
         }),
         resolve(),
         commonjs({
