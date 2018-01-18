@@ -10,7 +10,7 @@ import resolve from "rollup-plugin-node-resolve";
 const config = {
     input: "source/index.js",
     output: {
-        name: "MyDemoComponent",
+        name: "Stranded",
         globals: {
             react: "React",
             "prop-types": "PropTypes"

@@ -1,6 +1,6 @@
 import yup from "yup";
 
-import { strand, split, dispatch } from "stranded";
+import { strand, transit, dispatch } from "stranded";
 import { loginWasInvalid, loginFailed, userLoggedIn } from "./actions";
 import * as api from "./api";
 
@@ -52,4 +52,15 @@ export const login = (username, password) =>
             valid
                 ? loginWithCredentials(username, password)
                 : dispatch(loginWasInvalid(...invalidFields))
+    );
+
+export const Login = Symbol("Login");
+
+export const LOGIN_PAGE = "LOGIN_PAGE";
+
+export const loginProcess = () =>
+    strand(Login)(
+        transit({ page: LOGIN_PAGE }),
+        pause(LoginForm), // wait?
+        { username, password }
     );
