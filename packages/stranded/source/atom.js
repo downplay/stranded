@@ -10,7 +10,6 @@ function isFunction(functionToCheck) {
 
 class Atom {
     constructor(func) {
-        // TODO: Allow promise instead?
         invariant(func, "Atom must contain a function, literal or Promise");
         this.atom = isFunction(func) ? func : () => Promise.resolve(func);
     }

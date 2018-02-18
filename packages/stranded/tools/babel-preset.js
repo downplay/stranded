@@ -22,7 +22,6 @@ module.exports = {
         [
             "env",
             {
-                loose: true,
                 modules: building ? false : "commonjs"
             }
         ],
