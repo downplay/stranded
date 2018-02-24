@@ -1,18 +1,24 @@
-# Stranded 0.0.1
+# Stranded 0
 
 A new model for side effects in a React/Redux architecture.
 
 ## Intro
 
-Side effects in Redux are commonly handled using one of the popular libraries `redux-thunk`, `redux-saga`, or `redux-promise`. They are great solutions to many problems. But I have found myself increasingly not liking these solutions on three counts;
+Side effects in Redux are commonly handled using one of the popular libraries `redux-thunk`, `redux-saga`, or `redux-promise`. They are great solutions to many problems. But they have a number of drawbacks and even Dan Abramov stated: ['it was literally the "I hope people will come up with something better" solution.'](https://twitter.com/dan_abramov/status/800310164792414208)
+
+Here are some of the things that these libraries do:
 
 1. Changing the contract of the `dispatch` function, in a hidden and somewhat magical way
 
-2. Confusing to set up, and interactions between multiple Redux middlewares can become ambiguous
+2. Complex to set up, and interactions between multiple Redux middlewares can seem ambiguous
 
-3. Breaking the usual explicitness of everything that normally happens in a React and Redux architecture
+3. Breaking the usual explicitness and repeatability of the Redux event log, and the one-way flow
 
-This alternative side effects model adds a new layer to the architecture, rather than trying to inject new functionality into the dispatch layer. Redux instead remains as a purely synchronous state machine, and side effects are handled in a new layer in between your components and your store. I call this layer "Strands".
+4. Giving _too_ much flexibility to the developer, making it very easy to implement patterns with performance and other issues
+
+So, this is my attempt at creating a side-effects model that answers these concerns, whilst offering the power of Sagas, and without utilising generators. It is not a Redux middleware - instead it is an entirely separate layer in the architecture, rather than trying to inject new functionality into the dispatch layer. The flow of information in a Stranded world looks like this:
+
+UI -> Effects -> Actions -> Reducers -> UI
 
 ## How It Works
 
@@ -122,6 +128,23 @@ retry(flakyApiCall, {
 });
 ```
 
+### transact
+
+Wraps a series of effects in a "transaction". Action dispatches are queued and will only all be dispatched once the entire transaction completes without error or cancellation. This prevents your store from getting into an unknown state when you have multiple dispatches in a sequence.
+
+```js
+strand(
+    action(fetchDataStarted),
+    transact(
+        flakyApiCall,
+        action(({ data }) => flakyDataFirstPart(data)),
+        anEvenMoreFlakyApi,
+        action(({ data }) => flakyDataSecondPart(data))
+    )
+    action(fetchDataComplete),
+);
+```
+
 ### abort (/bail?)
 
 Ends execution of a strand.
@@ -143,7 +166,7 @@ Basically a try / catch, allowing you to map failure conditions to more useful d
 strand(
     attempt(
         maybeThrow,
-        // Add a property to contex to handle the failure in subsequent atoms
+        // Add a property to context to handle the failure in subsequent atoms
         { fail: true }
     ),
     // Dispatch action based on what happened

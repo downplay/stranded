@@ -1,6 +1,6 @@
-import { LOGIN_WAS_INVALID } from "./actionTypes";
+import { LOGIN_NOT_VALID } from "./actionTypes";
 
-export const loginWasInvalid = (...fields) => ({
-    type: LOGIN_WAS_INVALID,
+export const loginNotValid = (...fields) => ({
+    type: LOGIN_NOT_VALID,
     payload: fields
 });

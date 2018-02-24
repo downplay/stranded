@@ -9,7 +9,8 @@ const stranded = mapStrandsToProps => WrappedComponent => {
         static contextTypes = {
             strandedContext: strandsContextShape
         };
-        render() {
+
+        componentDidMount() {
             // For now, only supporting shorthand
             const connectedProps = { ...this.props };
             Object.keys(mapStrandsToProps).forEach(key => {
@@ -18,6 +19,9 @@ const stranded = mapStrandsToProps => WrappedComponent => {
                         mapStrandsToProps[key](...params)
                     );
             });
+        }
+
+        render() {
             return <WrappedComponent {...connectedProps} />;
         }
     }

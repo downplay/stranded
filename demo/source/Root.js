@@ -8,6 +8,7 @@ import { Provider as StrandProvider } from "stranded";
 
 import routes from "./routes";
 import Pages from "./Pages";
+import store from "./store";
 
 const history = createHistory();
 

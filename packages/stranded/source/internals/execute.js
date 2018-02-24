@@ -11,8 +11,10 @@ function* atomsGenerator(atoms) {
 
 const execute = (dispatch, getState, chainedContext) => async strand => {
     let context = { ...chainedContext };
-    const atoms = atomsGenerator(strand.atoms);
-    while (true) {
+    let cursor = 0;
+    const { atoms } = strand;
+
+    while (cursor < atoms.length) {
         const atom = atoms.next().value;
         if (!atom) {
             break;
