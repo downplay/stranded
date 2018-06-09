@@ -2,18 +2,38 @@
 
 import { execute, strand, action } from "../index";
 
-const fooBar = () => Promise.resolve({ foo: "bar" });
-const barFoo = () => Promise.resolve({ bar: "foo" });
+const fooBar = Promise.resolve({ foo: "bar" });
+const barFoo = Promise.resolve({ bar: "foo" });
 
-const createAnAction = foo => ({ type: "AN_ACTION", payload: foo });
+// const createAnAction = foo => ({ type: "AN_ACTION", payload: foo });
 
 describe("execute", () => {
-    test("resolves Promise", async () => {
-        const fixture = strand(fooBar);
-        const result = await execute()(fixture);
-        expect(result).toEqual({ foo: "bar" });
+    test("finishes no-op", async () => {
+        const fixture = strand();
+        const result = execute(fixture);
+        expect(result.finished).toEqual(true);
+        expect(result.status).toEqual("FINISHED");
+        expect(await result.next()).toEqual({});
     });
 
+    test("sets state from a literal", async () => {
+        const fixture = strand({ test: "thing" });
+        const execution = execute(fixture);
+        // expect(execution.state).toEqual({});
+        // expect(execution.status).toEqual("EXECUTING");
+        // console.log(execution);
+        // const state = await execution.next();
+        // expect(state).toEqual({ test: "thing" });
+        // expect(state).toBe(execution.state);
+        // expect(execution.status).toEqual("FINISHED");
+    });
+
+    test("executes a step and resolves a Promise", async () => {
+        // const fixture = strand(fooBar);
+        // const result = execute(fixture);
+        // expect(result.state).toEqual({ foo: "bar" });
+    });
+    /*
     test("resolves two Promises", async () => {
         const fixture = strand(fooBar, barFoo);
         const result = await execute()(fixture);
@@ -60,4 +80,5 @@ describe("execute", () => {
             payload: "bar"
         });
     });
+    */
 });

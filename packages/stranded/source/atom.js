@@ -1,5 +1,3 @@
-import invariant from "invariant";
-
 function isFunction(functionToCheck) {
     const getType = {};
     return (
@@ -9,13 +7,28 @@ function isFunction(functionToCheck) {
 }
 
 class Atom {
-    constructor(func) {
-        invariant(func, "Atom must contain a function, literal or Promise");
-        this.atom = isFunction(func) ? func : () => Promise.resolve(func);
+    static from(atom) {
+        if (atom instanceof Atom) {
+            return atom;
+        }
+        return new Atom(atom);
+    }
+
+    constructor(unit) {
+        if (unit) {
+            this.execute = isFunction(unit)
+                ? (...props) => new Promise(resolve => resolve(unit(...props)))
+                : () => Promise.resolve(unit);
+        }
+    }
+
+    // eslint-disable-next-line class-methods-use-this
+    execute() {
+        return Promise.resolve();
     }
 }
 
-const atom = func => (func instanceof Atom ? func : new Atom(func));
+const atom = Atom.from;
 
 export { Atom };
 
