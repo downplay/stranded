@@ -31,8 +31,8 @@ class ExecutionContext {
     start() {
         if (this.status === STATUS_UNSTARTED) {
             this.status = STATUS_RUNNING;
-            this.next();
         }
+        return this.next();
     }
 
     /**
@@ -50,15 +50,17 @@ class ExecutionContext {
             this.nextPromise = new Promise((resolve, reject) => {
                 atom.execute(this.state, this.context)
                     .then(result => {
+                        // Update execution state
                         this.status = STATUS_RUNNING;
+                        this.cursor++;
                         // Common case is for result to return state which will be merged with the execution state
                         // TODO: Manually apply keys and record which keys were modified to support parallel merging
                         if (result) {
                             this.state = { ...this.state, ...result };
                         }
+                        resolve(this.state);
                         // TODO: Throw on primitive types, and handle effects: if (result instanceof Effect) ...
                         // TODO: Also do something sensible if an error happens during this resolve, rather than during
-                        resolve(this.state);
                         // Run next Atom
                         this.next();
                     })

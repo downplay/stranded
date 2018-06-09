@@ -15,16 +15,13 @@ class Atom {
     }
 
     constructor(unit) {
-        if (unit) {
-            this.execute = isFunction(unit)
-                ? (...props) => new Promise(resolve => resolve(unit(...props)))
-                : () => Promise.resolve(unit);
-        }
+        this.unit = unit;
     }
 
-    // eslint-disable-next-line class-methods-use-this
-    execute() {
-        return Promise.resolve();
+    execute(...props) {
+        return Promise.resolve(
+            isFunction(this.unit) ? this.unit(...props) : this.unit
+        );
     }
 }
 

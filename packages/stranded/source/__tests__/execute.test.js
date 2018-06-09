@@ -13,26 +13,28 @@ describe("execute", () => {
         const result = execute(fixture);
         expect(result.finished).toEqual(true);
         expect(result.status).toEqual("FINISHED");
-        expect(await result.next()).toEqual({});
+        const state = await result.next();
+        expect(state).toEqual({});
     });
 
     test("sets state from a literal", async () => {
         const fixture = strand({ test: "thing" });
         const execution = execute(fixture);
-        // expect(execution.state).toEqual({});
-        // expect(execution.status).toEqual("EXECUTING");
+        expect(execution.state).toEqual({});
+        expect(execution.status).toEqual("EXECUTING");
         // console.log(execution);
-        // const state = await execution.next();
-        // expect(state).toEqual({ test: "thing" });
-        // expect(state).toBe(execution.state);
-        // expect(execution.status).toEqual("FINISHED");
+        const state = await execution.next();
+        expect(state).toEqual({ test: "thing" });
+        expect(state).toBe(execution.state);
+        expect(execution.status).toEqual("FINISHED");
+        expect(execution.cursor).toEqual(1);
     });
 
-    test("executes a step and resolves a Promise", async () => {
-        // const fixture = strand(fooBar);
-        // const result = execute(fixture);
-        // expect(result.state).toEqual({ foo: "bar" });
-    });
+    // test("executes a step and resolves a Promise", async () => {
+    //     // const fixture = strand(fooBar);
+    //     // const result = execute(fixture);
+    //     // expect(result.state).toEqual({ foo: "bar" });
+    // });
     /*
     test("resolves two Promises", async () => {
         const fixture = strand(fooBar, barFoo);
