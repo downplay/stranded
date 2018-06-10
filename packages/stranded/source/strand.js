@@ -1,5 +1,6 @@
 import invariant from "invariant";
 import { Atom } from "./atom";
+import execute from "./execute";
 
 export class Strand extends Atom {
     constructor(atoms = []) {
@@ -14,6 +15,15 @@ export class Strand extends Atom {
 
     at(index) {
         return this.atoms[index];
+    }
+
+    execute(state, context) {
+        // Since a Strand can also function as an Atom, here we execute the
+        // sub-strand and return the final state
+        // TODO: More interaction between parent and child strands might be useful.
+        // Also implement a plan for cancellation.
+        const execution = execute(this, context, state);
+        return execution.toEnd();
     }
 }
 

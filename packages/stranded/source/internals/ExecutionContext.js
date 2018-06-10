@@ -77,6 +77,19 @@ class ExecutionContext {
     }
 
     /**
+     * Resolves state once the entire Strand has finished.
+     * Warning: Since Strands can loop forever, it is possible that this will never resolve
+     */
+    toEnd() {
+        return this.next().then(() => {
+            if (!this.finished) {
+                return this.next();
+            }
+            return Promise.resolve(this.state);
+        });
+    }
+
+    /**
      * Ends the executing Strand
      */
     finish() {
