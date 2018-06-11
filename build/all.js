@@ -1,13 +1,10 @@
-const { execSync } = require("child_process");
+import runJobs from "./runJobs";
 
-const exec = (cmd, env) =>
-    execSync(cmd, {
-        stdio: "inherit",
-        env: Object.assign({}, process.env, env)
-    });
+const packages = [
+    {
+        name: "@strands/core",
+        path: "packages/core"
+    }
+];
 
-if (process.env.CI) {
-    exec("lerna run build --stream --ignore stranded-demo");
-} else {
-    exec("lerna run build --stream");
-}
+runJobs(packages, "build");

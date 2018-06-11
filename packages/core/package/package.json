@@ -1,0 +1,27 @@
+{
+    "description": "",
+    "keywords": [
+        "react",
+        "reactjs",
+        "side effects",
+        "async",
+        "redux",
+        "tools",
+        "data",
+        "thunks",
+        "sagas"
+    ],
+    "author": "Peter Hurst",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/downplay/stranded"
+    },
+    "peerDependencies": {
+        "prop-types": ">=15",
+        "react": ">=15"
+    },
+    "dependencies": {
+        "hoist-non-react-statics": "^2.0.0"
+    }
+}
